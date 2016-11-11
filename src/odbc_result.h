@@ -5,9 +5,10 @@
 #include <Rcpp.h>
 #include "r_types.h"
 #include "odbc_connection.h"
+#include <boost/array.hpp>
 
 namespace odbc {
-typedef std::array<const char, 255> string_buf;
+typedef boost::array<const char, 255> string_buf;
 
 class odbc_result {
   public:

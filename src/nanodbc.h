@@ -269,6 +269,7 @@ public:
     const char* what() const NANODBC_NOEXCEPT;
     const long native() const NANODBC_NOEXCEPT;
     const std::string state() const NANODBC_NOEXCEPT;
+    virtual ~database_error() throw ();
 
 private:
     long native_error;
