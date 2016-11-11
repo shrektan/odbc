@@ -10,18 +10,10 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - gcc-4.9
-      - g++-4.9
       - unixodbc unixodbc-dev
       - odbc-postgresql
       - libmyodbc
       - libsqliteodbc
-
-before_install: |
-  mkdir ~/.R
-  cat <<EOF > ~/.R/Makevars
-  CXX1X=g++-4.9
-  CXX1XSTD=-std=c++11
 
 before_script:
   - sudo -u postgres psql -U postgres -c 'CREATE DATABASE test_db;'
@@ -29,4 +21,4 @@ before_script:
   - mysql -u root -e 'CREATE DATABASE test_db;'
 
 after_success:
-  - R -e 'options(covr.gcov = "/usr/bin/gcov-4.9");covr::codecov(line_exclusions = c("src/nanodbc.h", "src/nanodbc.cpp"))'
+  - R -e 'covr::codecov(line_exclusions = c("src/nanodbc.h", "src/nanodbc.cpp"))'
