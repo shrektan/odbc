@@ -605,11 +605,11 @@ struct bound_parameter
 {
     bound_parameter() = default;
 
-    SQLUSMALLINT index_ = 0; // Zero-based index of parameter marker
-    SQLSMALLINT iotype_ = 0; // Input/Output type of parameter
-    SQLSMALLINT type_ = 0;   // SQL data type of parameter
-    SQLULEN size_ = 0;       // SQL data size of column or expression inbytes or characters
-    SQLSMALLINT scale_ = 0;  // decimal digits of column or expression
+    SQLUSMALLINT index_; // Zero-based index of parameter marker
+    SQLSMALLINT iotype_; // Input/Output type of parameter
+    SQLSMALLINT type_;   // SQL data type of parameter
+    SQLULEN size_;       // SQL data size of column or expression inbytes or characters
+    SQLSMALLINT scale_;  // decimal digits of column or expression
 };
 
 // Encapsulates properties of buffer with data values bound to statement parameter.
@@ -624,9 +624,9 @@ struct bound_buffer
     {
     }
 
-    T const* values_ = nullptr;  // Pointer to buffer for parameter's data
-    std::size_t size_ = 0;       // Number of values (1 or length of array)
-    std::size_t value_size_ = 0; // Size of single value (max size). Zero, if ignored.
+    T const* values_;  // Pointer to buffer for parameter's data
+    std::size_t size_;       // Number of values (1 or length of array)
+    std::size_t value_size_; // Size of single value (max size). Zero, if ignored.
 };
 
 // Allocates the native ODBC handles.
@@ -3131,9 +3131,8 @@ std::list<driver> list_drivers()
 
         if (rc == SQL_SUCCESS)
         {
-            using char_type = string_type::value_type;
             static_assert(
-                sizeof(NANODBC_SQLCHAR) == sizeof(char_type),
+                sizeof(NANODBC_SQLCHAR) == sizeof(string_type::value_type),
                 "incompatible SQLCHAR and string_type::value_type");
 
             driver drv;
