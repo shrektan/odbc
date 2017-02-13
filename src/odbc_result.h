@@ -345,6 +345,7 @@ class odbc_result {
             break;
           case datetime_t:
             x.attr("class") = Rcpp::CharacterVector::create("POSIXct", "POSIXt");
+            x.attr("tzone") = Rcpp::CharacterVector::create(c_->timezone());
             break;
           case raw_t:
             x.attr("class") = Rcpp::CharacterVector::create("blob");

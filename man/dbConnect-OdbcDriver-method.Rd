@@ -32,6 +32,10 @@ arguments to form the final connection string.}
 \item{.connection_string}{A complete connection string, useful if you are
 copy pasting it from another source. If this argument is used any additional
 arguments will be appended to this string.}
+
+\item{timezone}{The Server Time Zone. If the server has an internal timezone
+that is _not_ 'UTC', this will be used to set the `tzone` attribute for the
+returned `POSIXct` object.}
 }
 \description{
 Connect to a ODBC compatible database
