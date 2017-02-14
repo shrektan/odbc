@@ -5,6 +5,8 @@
 #include <Rcpp.h>
 #include "r_types.h"
 #include "odbc_connection.h"
+#include "date.h"
+#include "tz.h"
 
 namespace odbc {
 
@@ -284,19 +286,15 @@ class odbc_result {
 
     double as_double(nanodbc::timestamp const & ts)
     {
-      tm t;
-      t.tm_sec = t.tm_min = t.tm_hour = t.tm_isdst = 0;
-
-      t.tm_year = ts.year - 1900;
-      t.tm_mon = ts.month - 1;
-      t.tm_mday = ts.day;
-      t.tm_hour = ts.hour;
-      t.tm_min = ts.min;
-      t.tm_sec = ts.sec;
+      using namespace date;
+      using namespace std::chrono;
+      auto d = local_days{year{ts.year}/ts.month/ts.day} + hours(ts.hour) + minutes(ts.min) + seconds(ts.sec);
+      auto res = make_zoned(c_->time_zone(), d);
+      Rcpp::Rcout << c_->time_zone() << ':' << d << '\n' << res << '\n' << res.get_sys_time();
 
       // Fractional part is in billionths of a second
       // https://msdn.microsoft.com/en-us/library/ms714556.aspx
-      return Rcpp::mktime00(t) + (ts.fract / 1000000000.0);
+      return res.get_sys_time().time_since_epoch().count() + (ts.fract / 1000000000.0);
     }
 
     Rcpp::List create_dataframe(std::vector<r_type> types, std::vector<std::string> names, int n) {
@@ -345,7 +343,7 @@ class odbc_result {
             break;
           case datetime_t:
             x.attr("class") = Rcpp::CharacterVector::create("POSIXct", "POSIXt");
-            x.attr("tzone") = Rcpp::CharacterVector::create(c_->timezone());
+            x.attr("tzone") = Rcpp::CharacterVector::create("UTC");
             break;
           case raw_t:
             x.attr("class") = Rcpp::CharacterVector::create("blob");
