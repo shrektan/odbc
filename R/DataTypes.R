@@ -25,7 +25,7 @@
 #' dbGetInfo(con)$dbms.name
 #' #> [1] "foo"
 #'
-#' `odbcDataType.foo <- function(info, obj, ...) {
+#' `odbcDataType.foo <- function(con, obj, ...) {
 #'   switch_type(obj,
 #'     factor = "VARCHAR(255)",
 #'     datetime = "TIMESTAMP",
@@ -45,10 +45,12 @@
 #' @param ... Additional arguments passed to methods.
 #' @return Corresponding SQL type for the `obj`.
 #' @export
-odbcDataType <- function(info, obj, ...) UseMethod("odbcDataType")
+odbcDataType <- function(con, obj, ...) {
+  UseMethod("odbcDataType")
+}
 
 #' @export
-odbcDataType.default <- function(info, obj, ...) {
+odbcDataType.default <- function(con, obj, ...) {
   switch_type(obj,
     factor = "VARCHAR(255)",
     datetime = "TIMESTAMP",
@@ -64,7 +66,7 @@ odbcDataType.default <- function(info, obj, ...) {
 }
 
 #' @export
-`odbcDataType.Spark SQL` <- function(info, obj, ...) {
+`odbcDataType.Spark SQL` <- function(con, obj, ...) {
   switch_type(obj,
     factor = "VARCHAR(255)",
     datetime = "DATE",
@@ -80,7 +82,7 @@ odbcDataType.default <- function(info, obj, ...) {
 }
 
 #' @export
-`odbcDataType.Hive` <- function(info, obj, ...) {
+`odbcDataType.Hive` <- function(con, obj, ...) {
   switch_type(obj,
     factor = "STRING",
     datetime = "TIMESTAMP",
@@ -97,7 +99,7 @@ odbcDataType.default <- function(info, obj, ...) {
 
 # TODO: Revisit binary type (Impala)
 #' @export
-`odbcDataType.Impala` <- function(info, obj, ...) {
+`odbcDataType.Impala` <- function(con, obj, ...) {
   switch_type(obj,
               factor = "STRING",
               datetime = "STRING",
@@ -112,7 +114,7 @@ odbcDataType.default <- function(info, obj, ...) {
 }
 
 #' @export
-`odbcDataType.MySQL` <- function(info, obj, ...) {
+`odbcDataType.MySQL` <- function(con, obj, ...) {
   switch_type(obj,
     factor = "TEXT",
     datetime = "DATETIME",
@@ -128,7 +130,7 @@ odbcDataType.default <- function(info, obj, ...) {
 }
 
 #' @export
-`odbcDataType.PostgreSQL` <- function(info, obj, ...) {
+`odbcDataType.PostgreSQL` <- function(con, obj, ...) {
   switch_type(obj,
     factor = "TEXT",
     datetime = "TIMESTAMP",
@@ -144,7 +146,7 @@ odbcDataType.default <- function(info, obj, ...) {
 }
 
 #' @export
-`odbcDataType.Microsoft SQL Server` <- function(info, obj, ...) {
+`odbcDataType.Microsoft SQL Server` <- function(con, obj, ...) {
   switch_type(obj,
     factor = varchar(obj),
     datetime = "DATETIME",
@@ -160,7 +162,7 @@ odbcDataType.default <- function(info, obj, ...) {
 }
 
 #' @export
-`odbcDataType.SQLite` <- function(info, obj, ...) {
+`odbcDataType.SQLite` <- function(con, obj, ...) {
   switch_type(obj,
     factor = "TEXT",
     datetime = "NUMERIC",

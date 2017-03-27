@@ -17,16 +17,18 @@ OdbcConnection <- function(dsn = NULL, ..., timezone = "UTC", driver = NULL, ser
   quote <- connection_quote(ptr)
 
   info <- connection_info(ptr)
-  class(info) <- c(info$dbms.name, "driver_info", "list")
 
-  new("OdbcConnection", ptr = ptr, quote = quote, info = info)
+  res <- new("OdbcConnection", ptr = ptr, quote = quote, info = info)
+  setOldClass(info$dbms.name)
+  oldClass(res) <- c("OdbcConnection", info$dbms.name)
+  asS4(res)
 }
 
 #' @rdname OdbcConnection
 #' @export
 setClass(
   "OdbcConnection",
-  contains = "DBIConnection",
+  contains = c("DBIConnection", "oldClass"),
   slots = list(
     ptr = "externalptr",
     quote = "character",
@@ -111,7 +113,7 @@ setMethod(
 setMethod(
   "dbDataType", "OdbcConnection",
   function(dbObj, obj, ...) {
-    odbcDataType(dbObj@info, obj)
+    odbcDataType(as(dbObj, "S3"), obj)
   })
 
 #' @rdname OdbcConnection
