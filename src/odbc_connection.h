@@ -10,7 +10,9 @@ class odbc_result;
 
 class odbc_connection {
 public:
-  odbc_connection(std::string connection_string, std::string timezone = "UTC")
+  odbc_connection(std::string connection_string,
+
+      std::string timezone = "UTC")
       : current_result_(nullptr) {
 
     if (!cctz::load_time_zone(timezone, &timezone_)) {
