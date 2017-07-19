@@ -10,7 +10,19 @@ NULL
 
 class_cache <- new.env(parent = emptyenv())
 
-OdbcConnection <- function(dsn = NULL, ..., encoding = "", timezone = "UTC", driver = NULL, server = NULL, database = NULL, uid = NULL, pwd = NULL, .connection_string = NULL) {
+OdbcConnection <- function(
+  dsn = NULL,
+  ...,
+  timezone = "UTC",
+  encoding = "",
+  bigint = c("integer64", "integer", "numeric", "character"),
+  driver = NULL,
+  server = NULL,
+  database = NULL,
+  uid = NULL,
+  pwd = NULL,
+  .connection_string = NULL) {
+
   args <- c(dsn = dsn, driver = driver, server = server, database = database, uid = uid, pwd = pwd, list(...))
   stopifnot(all(has_names(args)))
 
@@ -26,7 +38,8 @@ OdbcConnection <- function(dsn = NULL, ..., encoding = "", timezone = "UTC", dri
     setClass(info$dbms.name,
       contains = "OdbcConnection", where = class_cache)
   }
-  new(info$dbms.name, ptr = ptr, quote = quote, info = info, encoding = encoding)
+  res <- new(info$dbms.name, ptr = ptr, quote = quote, info = info, encoding = encoding)
+  odbcSetBigIntMapping(res, bigint)
 }
 
 #' @rdname OdbcConnection
@@ -42,6 +55,7 @@ setClass(
   )
 )
 
+# TODO: show encoding, timezone, bigint mapping
 #' @rdname OdbcConnection
 #' @inheritParams methods::show
 #' @export
@@ -342,4 +356,18 @@ odbcSetTransactionIsolationLevel <- function(conn, levels) {
   levels <- match.arg(tolower(levels), names(transactionLevels()), several.ok = TRUE)
 
   set_transaction_isolation(conn@ptr, transactionLevels()[levels])
+}
+
+#' Set the BIGINT type mapping
+#'
+#' @inheritParams DBI::dbDisconnect
+#' @param bigint An R type that `SQL BIGINT` type should be mapped to while
+#' reading from the database.
+#'
+#' @export
+odbcSetBigIntMapping <- function(conn, bigint = c("integer64", "integer", "numeric", "character")) {
+  bigint <- match.arg(bigint)
+  bigint <- switch(bigint, integer64 = 0, integer = 1, numeric = 2, character = 3)
+  set_bigint_mapping(conn@ptr, bigint)
+  conn
 }

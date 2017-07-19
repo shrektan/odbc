@@ -189,3 +189,8 @@ void set_transaction_isolation(connection_ptr const& p, size_t level) {
   SQLSetConnectAttr(
       c->native_dbc_handle(), SQL_ATTR_TXN_ISOLATION, (SQLPOINTER)level, 0);
 }
+
+// [[Rcpp::export]]
+void set_bigint_mapping(connection_ptr p, int map_to) {
+  (*p)->set_bigint_mapping(static_cast<bigint_map_t>(map_to));
+}
