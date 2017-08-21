@@ -129,7 +129,7 @@ setMethod("sqlCreateTable", "OdbcConnection",
   }
 )
 
-#' SQL Table
+#' dbId for tables in schemas / catalogs
 #'
 #' A class to refer to a specific SQL table, including those in non-default
 #' catalogs and schemas.
@@ -138,14 +138,14 @@ setMethod("sqlCreateTable", "OdbcConnection",
 #' @param schema A character vector with the table schema (optional).
 #' @param catalog A character vector with the table catalog (optional).
 #' @export
-SQLTable <- function(con, name, schema = character(), catalog = character()) {
-  obj <- new("SQLTable", con = con, name = name, schema = schema, catalog = catalog)
+dbId <- function(con, name, schema = character(), catalog = character()) {
+  obj <- new("dbId", con = con, name = name, schema = schema, catalog = catalog)
   obj@.Data <- as(obj, "SQL")
   obj
 }
-setClass("SQLTable", slots = c(con = "DBIConnection", name = "character", schema = "character", catalog = "character"), contains = "SQL")
+setClass("dbId", slots = c(con = "DBIConnection", name = "character", schema = "character", catalog = "character"), contains = "SQL")
 
-setAs("SQLTable", "SQL", function(from) {
+setAs("dbId", "SQL", function(from) {
   SQL(paste0(collapse = ".", c(
     if (length(from@catalog) > 0 && nzchar(from@catalog)) dbQuoteIdentifier(from@con, from@catalog),
     if (length(from@schema) > 0 && nzchar(from@schema)) dbQuoteIdentifier(from@con, from@schema),
@@ -156,11 +156,10 @@ setAs("SQLTable", "SQL", function(from) {
 #' @inheritParams DBI::dbExistsTable
 #' @export
 setMethod(
-  "dbExistsTable", c("OdbcConnection", "SQLTable"),
+  "dbExistsTable", c("OdbcConnection", "dbId"),
   function(conn, name, ...) {
     dbUnQuoteIdentifier(conn, name@name) %in% connection_sql_tables(conn@ptr,
       catalog_name = if (length(name@catalog) > 0) dbUnQuoteIdentifier(conn, name@catalog) else "%",
       schema_name = if (length(name@schema) > 0) dbUnQuoteIdentifier(conn, name@schema) else "%",
       table_name = dbUnQuoteIdentifier(conn, name@name))$table_name
   })
-

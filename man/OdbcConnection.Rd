@@ -24,7 +24,7 @@
 \alias{dbBegin,OdbcConnection-method}
 \alias{dbCommit,OdbcConnection-method}
 \alias{dbRollback,OdbcConnection-method}
-\alias{dbExistsTable,OdbcConnection,SQLTable-method}
+\alias{dbExistsTable,OdbcConnection,dbId-method}
 \title{Odbc Connection Methods}
 \usage{
 \S4method{show}{OdbcConnection}(object)
@@ -67,7 +67,7 @@
 
 \S4method{dbRollback}{OdbcConnection}(conn, ...)
 
-\S4method{dbExistsTable}{OdbcConnection,SQLTable}(conn, name, ...)
+\S4method{dbExistsTable}{OdbcConnection,dbId}(conn, name, ...)
 }
 \arguments{
 \item{object}{Any R object}
