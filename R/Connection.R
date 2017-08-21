@@ -154,8 +154,16 @@ setMethod(
 setMethod(
   "dbQuoteString", c("OdbcConnection", "character"),
   function(conn, x, ...) {
-    # Optional
     getMethod("dbQuoteString", c("DBIConnection", "character"), asNamespace("DBI"))(conn, x, ...)
+  })
+
+#' @rdname OdbcConnection
+#' @inheritParams DBI::dbQuoteString
+#' @export
+setMethod(
+  "dbQuoteString", c("OdbcConnection", "SQL"),
+  function(conn, x, ...) {
+    getMethod("dbQuoteString", c("DBIConnection", "SQL"), asNamespace("DBI"))(conn, x, ...)
   })
 
 #' @rdname OdbcConnection
@@ -170,6 +178,14 @@ setMethod(
     DBI::SQL(paste(conn@quote, encodeString(x), conn@quote, sep = ""))
   })
 
+#' @rdname OdbcConnection
+#' @inheritParams DBI::dbQuoteIdentifier
+#' @export
+setMethod(
+  "dbQuoteIdentifier", c("OdbcConnection", "SQL"),
+  function(conn, x, ...) {
+    getMethod("dbQuoteIdentifier", c("DBIConnection", "SQL"), asNamespace("DBI"))(conn, x, ...)
+  })
 
 #' Un-Quote identifiers
 #'
