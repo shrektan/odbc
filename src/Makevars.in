@@ -12,8 +12,8 @@ $(SHLIB): $(OBJECTS)
 $(OBJECTS): cctz/libcctz.a
 
 cctz/libcctz.a:
-	(cd cctz && \
-$(MAKE) libcctz.a CC="$(CC)" CXX="$(CXX)" AR="$(AR)" ARFLAGS=$(ARFLAGS) CXXPICFLAGS="$(CXXPICFLAGS)")
+	$(MAKE) --version
+	$(MAKE) -C cctz libcctz.a CXX="$(CXX)" LDFLAGS=$(LDFLAGS) CXXFLAGS="-Iinclude $(CXXFLAGS)" AR="$(AR)" ARFLAGS="$(ARFLAGS)" CXXPICFLAGS="$(CXXPICFLAGS)"
 
 nanodbc.o: nanodbc/nanodbc.cpp
 	$(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) -c $< -o $@

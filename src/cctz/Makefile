@@ -34,7 +34,7 @@ STD ?= c++11
 LDFLAGS ?= -O3
 PREFIX ?= /usr/local
 DESTDIR ?=
-CXXPICFLAGS = -fPIC
+CXXPICFLAGS ?= -fPIC
 
 # possible support for googletest
 ## TESTS = civil_time_test time_zone_lookup_test time_zone_format_test
