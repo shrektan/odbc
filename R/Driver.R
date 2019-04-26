@@ -45,6 +45,7 @@ setMethod(
 #' timezone that is _not_ 'UTC'. If the database is in your local timezone set
 #' to `Sys.timezone()`. See [OlsonNames()] for a complete list of available
 #' timezones on your system.
+#' @param timezone_result The timezone of the result.
 #' @param encoding The text encoding used on the Database. If the database is
 #' not using UTF-8 you will need to set the encoding to get accurate re-encoding.
 #' See [iconvlist()] for a complete list of available encodings on your system.
@@ -83,6 +84,7 @@ setMethod(
     dsn = NULL,
     ...,
     timezone = "UTC",
+    timezone_result = "UTC",
     encoding = "",
     bigint = c("integer64", "integer", "numeric", "character"),
     timeout = 10,
@@ -98,6 +100,7 @@ setMethod(
       dsn = dsn,
       ...,
       timezone = timezone,
+      timezone_result = timezone_result,
       encoding = encoding,
       bigint = bigint,
       timeout = timeout,

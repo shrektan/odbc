@@ -779,9 +779,19 @@ void odbc_result::assign_datetime(
     res = NA_REAL;
   } else {
     auto ts = value.get<nanodbc::timestamp>(column);
+    auto frac = modf(value, &value);
+    using namespace std::chrono;
+    auto utc_time = system_clock::from_time_t(static_cast<std::time_t>(as_double(ts)));
+    auto civil_time = cctz::convert(utc_time, c_->timezone_result());
+    ts.fract = frac;
+    ts.sec = civil_time.second();
+    ts.min = civil_time.minute();
+    ts.hour = civil_time.hour();
+    ts.day = civil_time.day();
+    ts.month = civil_time.month();
+    ts.year = civil_time.year();
     res = as_double(ts);
   }
-
   REAL(out[column])[row] = res;
 }
 void odbc_result::assign_date(

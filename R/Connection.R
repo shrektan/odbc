@@ -14,6 +14,7 @@ OdbcConnection <- function(
   dsn = NULL,
   ...,
   timezone = "UTC",
+  timezone_result = "UTC",
   encoding = "",
   bigint = c("integer64", "integer", "numeric", "character"),
   timeout = Inf,

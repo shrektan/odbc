@@ -21,6 +21,7 @@ public:
   odbc_connection(
       std::string connection_string,
       std::string timezone = "UTC",
+      std::string timezone_result = "UTC",
       std::string encoding = "",
       bigint_map_t bigint_mapping = i64_to_integer64,
       long timeout = 0);
@@ -37,6 +38,7 @@ public:
   void set_current_result(odbc_result* r);
 
   cctz::time_zone timezone() const;
+  cctz::time_zone timezone_result() const;
   std::string encoding() const;
 
   bigint_map_t get_bigint_mapping() const;
@@ -46,6 +48,7 @@ private:
   std::unique_ptr<nanodbc::transaction> t_;
   odbc_result* current_result_;
   cctz::time_zone timezone_;
+  cctz::time_zone timezone_result_;
   std::string encoding_;
   bigint_map_t bigint_mapping_;
 };
